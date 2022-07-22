@@ -1,0 +1,1 @@
+Following https://raytracing.github.io/books/RayTracingInOneWeekend.html in different languages (so far Nim and Rust)
