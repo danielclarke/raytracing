@@ -35,7 +35,8 @@ fn ray_color(ray: &Ray, world: &World, depth: i32) -> Color {
             // let target = hit_record.p + utils::random_point_in_unit_hemisphere(hit_record.normal);
             let scattered = hit_record.material.scatter(ray, &hit_record);
             if scattered.is_some() {
-                return ray_color(&scattered.as_ref().unwrap(), world, depth - 1) * scattered.as_ref().unwrap().color;
+                return ray_color(&scattered.as_ref().unwrap(), world, depth - 1)
+                    * scattered.as_ref().unwrap().color;
             } else {
                 Color {
                     x: 0.0,
@@ -169,7 +170,7 @@ fn main() -> std::io::Result<()> {
                 let u = (i as f32 + rand::random::<f32>()) / (IM_WIDTH - 1) as f32;
                 let v = ((IM_HEIGHT - j) as f32 + rand::random::<f32>()) / (IM_HEIGHT - 1) as f32;
                 let ray = camera.get_ray(u, v);
-                color += ray_color(&ray, &world, MAX_DEPTH);
+                color += ray_color(&ray, &world, MAX_DEPTH) * ray.color;
             }
             file.write_all(color.ppm(NUM_SAMPLES).as_bytes())?;
             file.write_all("\n".as_bytes())?;
