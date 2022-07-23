@@ -33,6 +33,15 @@ impl Vec3 {
     pub fn dot(self, v: Vec3) -> f32 {
         self.x * v.x + self.y * v.y + self.z * v.z
     }
+
+    pub fn close_to_zero(self) -> bool {
+        const S: f32 = 1e-8;
+        self.x.abs() < S && self.y.abs() < S && self.z.abs() < S
+    }
+
+    pub fn reflect(self, normal: Vec3) -> Vec3 {
+        self - 2.0 * self.dot(normal) * normal
+    }
 }
 
 impl std::ops::Add<Vec3> for Vec3 {
@@ -113,6 +122,17 @@ impl std::ops::Mul<Vec3> for f32 {
             x: self * v.x,
             y: self * v.y,
             z: self * v.z,
+        }
+    }
+}
+
+impl std::ops::Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+    fn mul(self, v: Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x * v.x,
+            y: self.y * v.y,
+            z: self.z * v.z,
         }
     }
 }

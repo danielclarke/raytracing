@@ -1,8 +1,7 @@
 use crate::hit_record::HitRecord;
-use crate::point3::Point3;
+use crate::material::Material;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
-use crate::vec3::Vec3;
 
 pub struct World {
     pub objects: Vec<Sphere>,

@@ -36,6 +36,19 @@ pub fn random_point_in_unit_sphere() -> Point3 {
     }
 }
 
+pub fn random_point_in_unit_hemisphere(v: Vec3) -> Point3 {
+    let u = random_point_in_unit_sphere();
+    if 0.0 < u.dot(v) {
+        u
+    } else {
+        -u
+    }
+}
+
+pub fn random_unit_vec3() -> Vec3 {
+    random_point_in_unit_sphere().unit()
+}
+
 pub fn lerp(a: Vec3, b: Vec3, t: f32) -> Vec3 {
     (1.0 - t) * a + t * b
 }

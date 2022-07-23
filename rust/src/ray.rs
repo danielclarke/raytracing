@@ -1,9 +1,11 @@
+use crate::color::Color;
 use crate::point3::Point3;
 use crate::vec3::Vec3;
 
 pub struct Ray {
     pub origin: Point3,
     pub direction: Vec3,
+    pub color: Color,
 }
 
 impl Ray {

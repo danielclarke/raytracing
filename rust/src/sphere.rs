@@ -1,4 +1,5 @@
 use crate::hit_record::HitRecord;
+use crate::material::Material;
 use crate::point3::Point3;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
@@ -6,6 +7,7 @@ use crate::vec3::Vec3;
 pub struct Sphere {
     pub center: Point3,
     pub radius: f32,
+    pub material: Material,
 }
 
 impl Sphere {
@@ -13,6 +15,7 @@ impl Sphere {
         Sphere {
             center: Vec3::zeros(),
             radius: 1.0,
+            material: Material::None,
         }
     }
 
@@ -38,6 +41,12 @@ impl Sphere {
 
         let p = ray.at(root);
         let normal = (p - self.center) / self.radius;
-        Some(HitRecord::qualified_hit_record(ray, p, root, normal))
+        Some(HitRecord::qualified_hit_record(
+            ray,
+            self.material,
+            p,
+            root,
+            normal,
+        ))
     }
 }

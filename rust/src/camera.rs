@@ -1,3 +1,4 @@
+use crate::color::Color;
 use crate::point3::Point3;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
@@ -50,6 +51,11 @@ impl Camera {
             origin: self.origin,
             direction: self.lower_left_corner + u * self.horizontal + v * self.vertical
                 - self.origin,
+            color: Color {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
         }
     }
 }
