@@ -35,7 +35,7 @@ fn ray_color(ray: &Ray, world: &World, depth: i32) -> Color {
             // let target = hit_record.p + utils::random_point_in_unit_hemisphere(hit_record.normal);
             let scattered = hit_record.material.scatter(ray, &hit_record);
             if scattered.is_some() {
-                return 0.5 * ray_color(&scattered.as_ref().unwrap(), world, depth - 1) * scattered.as_ref().unwrap().color;
+                return ray_color(&scattered.as_ref().unwrap(), world, depth - 1) * scattered.as_ref().unwrap().color;
             } else {
                 Color {
                     x: 0.0,
@@ -72,30 +72,60 @@ fn main() -> std::io::Result<()> {
             Sphere {
                 center: Point3 {
                     x: 0.0,
-                    y: 0.0,
-                    z: -1.0,
-                },
-                radius: 0.5,
-                material: Material::Lambertian {
-                    aldebo: Color {
-                        x: 0.5,
-                        y: 0.0,
-                        z: 0.5,
-                    },
-                },
-            },
-            Sphere {
-                center: Point3 {
-                    x: 0.0,
                     y: -100.5,
                     z: -1.0,
                 },
                 radius: 100.0,
                 material: Material::Lambertian {
                     aldebo: Color {
-                        x: 1.0,
-                        y: 1.0,
-                        z: 1.0,
+                        x: 0.8,
+                        y: 0.8,
+                        z: 0.0,
+                    },
+                },
+            },
+            Sphere {
+                center: Point3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: -1.0,
+                },
+                radius: 0.5,
+                material: Material::Lambertian {
+                    aldebo: Color {
+                        x: 0.7,
+                        y: 0.3,
+                        z: 0.3,
+                    },
+                },
+            },
+            Sphere {
+                center: Point3 {
+                    x: -1.0,
+                    y: 0.0,
+                    z: -1.0,
+                },
+                radius: 0.5,
+                material: Material::Metal {
+                    aldebo: Color {
+                        x: 0.8,
+                        y: 0.8,
+                        z: 0.8,
+                    },
+                },
+            },
+            Sphere {
+                center: Point3 {
+                    x: 1.0,
+                    y: 0.0,
+                    z: -1.0,
+                },
+                radius: 0.5,
+                material: Material::Metal {
+                    aldebo: Color {
+                        x: 0.8,
+                        y: 0.6,
+                        z: 0.2,
                     },
                 },
             },
