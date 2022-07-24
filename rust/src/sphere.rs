@@ -25,15 +25,15 @@ impl Sphere {
         let half_b = oc.dot(ray.direction);
         let c = oc.dot(oc) - self.radius * self.radius;
 
-        let determinant = half_b * half_b - a * c;
-        if determinant < 0.0 {
+        let discriminant = half_b * half_b - a * c;
+        if discriminant < 0.0 {
             return None;
         }
 
-        let sqrtd = determinant.sqrt();
-        let root = (-half_b - sqrtd) / a;
+        let sqrtd = discriminant.sqrt();
+        let mut root = (-half_b - sqrtd) / a;
         if root < t_min || t_max < root {
-            let root = (-half_b + sqrtd) / a;
+            root = (-half_b + sqrtd) / a;
             if root < t_min || t_max < root {
                 return None;
             }
