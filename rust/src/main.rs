@@ -90,7 +90,7 @@ fn main() -> std::io::Result<()> {
             },
             Sphere {
                 center: Point3 {
-                    x: 0.0,
+                    x: -1.0,
                     y: 0.0,
                     z: -1.0,
                 },
@@ -105,11 +105,22 @@ fn main() -> std::io::Result<()> {
             },
             Sphere {
                 center: Point3 {
-                    x: -1.0,
-                    y: 0.0,
+                    x: 0.0,
+                    y: 0.25,
                     z: -1.0,
                 },
                 radius: 0.5,
+                material: Material::Dielectric {
+                    refractive_index: 1.5,
+                },
+            },
+            Sphere {
+                center: Point3 {
+                    x: 0.0,
+                    y: 0.25,
+                    z: -1.0,
+                },
+                radius: -0.2,
                 material: Material::Dielectric {
                     refractive_index: 1.5,
                 },

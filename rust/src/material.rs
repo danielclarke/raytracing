@@ -20,6 +20,12 @@ fn refract(uv: Vec3, n: Vec3, etai_over_etat: f32) -> Vec3 {
     return r_out_perp + r_out_parallel;
 }
 
+fn reflectance(cosine: f32, ref_idx: f32) -> f32 {
+    let r0 = (1.0 - ref_idx) / (1.0 + ref_idx);
+    let r0 = r0 * r0;
+    r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0)
+}
+
 impl Material {
     pub fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<Ray> {
         match self {
@@ -60,7 +66,9 @@ impl Material {
 
                 let cos_theta = f32::min((-ray.direction.unit()).dot(hit_record.normal), 1.0);
                 let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
-                if 1.0 < refraction_ratio * sin_theta {
+                if 1.0 < refraction_ratio * sin_theta
+                    || rand::random::<f32>() < reflectance(cos_theta, refraction_ratio)
+                {
                     return Some(Ray {
                         origin: hit_record.p,
                         direction: ray.direction.unit().reflect(hit_record.normal),
