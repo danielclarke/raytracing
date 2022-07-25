@@ -10,7 +10,7 @@ pub enum Material {
     None,
     Metal { aldebo: Color, fuzz: f32 },
     Lambertian { aldebo: Color },
-    Dielectric { refractive_index: f32 }
+    Dielectric { refractive_index: f32 },
 }
 
 fn refract(uv: Vec3, n: Vec3, etai_over_etat: f32) -> Vec3 {
@@ -21,7 +21,6 @@ fn refract(uv: Vec3, n: Vec3, etai_over_etat: f32) -> Vec3 {
 }
 
 impl Material {
-
     pub fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<Ray> {
         match self {
             Material::None => None,
@@ -58,8 +57,26 @@ impl Material {
                 } else {
                     *refractive_index
                 };
-                let refract_direction = refract(ray.direction.unit(), hit_record.normal, refraction_ratio);
-                return Some(Ray{origin: hit_record.p, direction: refract_direction, color: ray.color});
+
+                let cos_theta = f32::min((-ray.direction.unit()).dot(hit_record.normal), 1.0);
+                let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+                if 1.0 < refraction_ratio * sin_theta {
+                    return Some(Ray {
+                        origin: hit_record.p,
+                        direction: ray.direction.unit().reflect(hit_record.normal),
+                        color: ray.color,
+                    });
+                } else {
+                    let r_out_perp =
+                        refraction_ratio * (ray.direction.unit() + cos_theta * hit_record.normal);
+                    let r_out_parallel =
+                        -(1.0 - r_out_perp.dot(r_out_perp)).abs().sqrt() * hit_record.normal;
+                    return Some(Ray {
+                        origin: hit_record.p,
+                        direction: r_out_perp + r_out_parallel,
+                        color: ray.color,
+                    });
+                }
             }
         }
     }

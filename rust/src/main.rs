@@ -95,8 +95,12 @@ fn main() -> std::io::Result<()> {
                     z: -1.0,
                 },
                 radius: 0.5,
-                material: Material::Dielectric {
-                    refractive_index: 1.5,
+                material: Material::Lambertian {
+                    aldebo: Color {
+                        x: 0.1,
+                        y: 0.2,
+                        z: 0.5,
+                    },
                 },
             },
             Sphere {
@@ -123,7 +127,7 @@ fn main() -> std::io::Result<()> {
                         y: 0.6,
                         z: 0.2,
                     },
-                    fuzz: 1.0
+                    fuzz: 1.0,
                 },
             },
         ],
