@@ -8,10 +8,11 @@ import point3
 import color
 import ray
 import hit_record
-import hittable
+import sphere
+import world
 import camera
 
-proc rayColor(ray: Ray; world: HittableList; depth: int): Color =
+proc rayColor(ray: Ray; world: World; depth: int): Color =
   if depth <= 0:
     result = Color(x: 0.0, y: 0.0, z: 0.0)
   else:
@@ -35,9 +36,9 @@ proc main =
   const imHeight = (imWidth / aspect).int
 
   # world
-  var world: HittableList
-  world.add(newHittableSphere(Point3(x: 0.0, y: 0.0, z: -1.0), 0.5))
-  world.add(newHittableSphere(Point3(x: 0.0, y: -100.5, z: -1.0), 100.0))
+  var world: World
+  world.add(Sphere(center: Point3(x: 0.0, y: 0.0, z: -1.0), radius: 0.5))
+  world.add(Sphere(center: Point3(x: 0.0, y: -100.5, z: -1.0), radius: 100.0))
 
   # camera
   const viewportHeight = 2.0
