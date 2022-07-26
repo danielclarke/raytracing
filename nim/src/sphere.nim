@@ -1,15 +1,17 @@
 import std/options
 import std/math
 
+import color
 import vec3
 import point3
 import ray
-import hit_record
+import material
 
 type
   Sphere* = object
     center*: Point3
     radius*: float
+    material*: Material
 
 func unitSphere*(): Sphere =
   Sphere(center: zerosVec3(), radius: 1.0)
@@ -36,4 +38,5 @@ func hit*(self: Sphere; ray: Ray; t_min, t_max: float): Option[HitRecord] =
 
   let p = ray.at(root)
   let normal = (p - self.center) / self.radius
-  return some(HitRecord(p: p, normal: normal, t: root).qualifyNormal(ray, normal))
+  return some(HitRecord(p: p, normal: normal, material: self.material,
+      t: root).qualifyNormal(ray, normal))

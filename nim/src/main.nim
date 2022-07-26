@@ -7,7 +7,7 @@ import vec3
 import point3
 import color
 import ray
-import hit_record
+import material
 import sphere
 import world
 import camera
@@ -19,13 +19,14 @@ proc rayColor(ray: Ray; world: World; depth: int): Color =
     let hr = world.hit(ray, 0.001, Inf)
     if hr.isSome():
       let hitRecord = hr.get()
-      # let target = hitRecord.p + hitRecord.normal + randomUnitVec3()
-      let target = hitRecord.p + randomInHemisphere(hitRecord.normal)
-      result = 0.5 * rayColor(Ray(origin: hitRecord.p, direction: target -
-          hitRecord.p), world, depth - 1)
+      let scatteredRay = hitRecord.material.scatter(ray, hitRecord)
+      if scatteredRay.isSome():
+        return scatteredRay.get().color * rayColor(scatteredRay.get(), world, depth - 1)
+      else:
+        return Color(x: 1.0, y: 0.0, z: 0.0)
     else:
       let t = (ray.direction.unit.y + 1.0) * 0.5
-      result = lerp(Color(x: 1.0, y: 1.0, z: 1.0), Color(x: 0.5, y: 0.7,
+      return lerp(Color(x: 1.0, y: 1.0, z: 1.0), Color(x: 0.5, y: 0.7,
           z: 1.0), t)
 
 proc main =
@@ -37,8 +38,46 @@ proc main =
 
   # world
   var world: World
-  world.add(Sphere(center: Point3(x: 0.0, y: 0.0, z: -1.0), radius: 0.5))
-  world.add(Sphere(center: Point3(x: 0.0, y: -100.5, z: -1.0), radius: 100.0))
+  world.add(
+    Sphere(
+      center: Point3(x: 0.0, y: -100.5, z: -1.0),
+      radius: 100.0,
+      material: Material(
+        variant: mvLambertian,
+        lambertian: Lambertian(albedo: Color(x: 0.8, y: 0.8, z: 0.0))
+      )
+    )
+  )
+  world.add(
+    Sphere(
+      center: Point3(x: 0.0, y: 0.0, z: -1.0),
+      radius: 0.5,
+      material: Material(
+        variant: mvLambertian,
+        lambertian: Lambertian(albedo: Color(x: 0.7, y: 0.3, z: 0.3))
+      )
+    )
+  )
+  world.add(
+    Sphere(
+      center: Point3(x: -1.0, y: 0.0, z: -1.0),
+      radius: 0.5,
+      material: Material(
+        variant: mvMetal,
+        metal: Metal(albedo: Color(x: 0.8, y: 0.8, z: 0.8))
+      )
+    )
+  )
+  world.add(
+    Sphere(
+      center: Point3(x: 1.0, y: 0.0, z: -1.0),
+      radius: 0.5,
+      material: Material(
+        variant: mvMetal,
+        metal: Metal(albedo: Color(x: 0.8, y: 0.6, z: 0.2))
+      )
+    )
+  )
 
   # camera
   const viewportHeight = 2.0

@@ -1,3 +1,4 @@
+import color
 import point3
 import vec3
 import ray
@@ -25,5 +26,8 @@ func newCamera*(aspect, width, focalLength: float, origin: Point3): Camera =
   )
 
 func getRay*(self: Camera; u, v: float): Ray =
-  Ray(origin: self.origin, direction: self.lowerLeftCorner + u *
-      self.horizontal + v * self.vertical - self.origin)
+  Ray(
+    origin: self.origin,
+    direction: self.lowerLeftCorner + u * self.horizontal + v * self.vertical - self.origin,
+    color: Color(x: 1.0, y: 1.0, z: 1.0)
+  )

@@ -77,6 +77,13 @@ func limit*(v: Vec3; l: float): Vec3 =
   else:
     return v
 
+func reflect*(v, n: Vec3): Vec3 =
+  v - 2 * v.dot(n) * n
+
+func nearZero*(v: Vec3): bool =
+  let s = 1e-8
+  abs(v.x) < s and abs(v.y) < s and abs(v.z) < s
+
 proc randomVec3*(min, max: Vec3): Vec3 =
   Vec3(x: rand(max.x - min.x) + min.x, y: rand(max.y - min.y) + min.y, z: rand(
       max.z - min.z) + min.z)

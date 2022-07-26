@@ -2,7 +2,7 @@ import std/options
 
 import sphere
 import ray
-import hit_record
+import material
 
 type
   World* = object
@@ -10,8 +10,8 @@ type
 
 func hit*(self: World; ray: Ray; t_min, t_max: float): Option[HitRecord] =
   var closest = t_max
-  for h in self.objects:
-    let hr = h.hit(ray, t_min, closest)
+  for sphere in self.objects:
+    let hr = sphere.hit(ray, t_min, closest)
     if hr.isSome():
       result = hr
       closest = hr.get().t
