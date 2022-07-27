@@ -33,7 +33,7 @@ proc main =
 
   # image
   const aspect = 16.0 / 9.0
-  const imWidth = 400
+  const imWidth = 400 * 3
   const imHeight = (imWidth / aspect).int
 
   # world
@@ -50,7 +50,7 @@ proc main =
   )
   world.add(
     Sphere(
-      center: Point3(x: 0.0, y: 0.0, z: -1.0),
+      center: Point3(x: -1.0, y: 0.0, z: -1.0),
       radius: 0.5,
       material: Material(
         variant: mvLambertian,
@@ -60,7 +60,7 @@ proc main =
   )
   world.add(
     Sphere(
-      center: Point3(x: -1.0, y: 0.0, z: -1.0),
+      center: Point3(x: 0.0, y: 0.25, z: -1.0),
       radius: 0.5,
       material: Material(
         variant: mvDielectric,
@@ -68,16 +68,16 @@ proc main =
       )
     )
   )
-  # world.add(
-  #   Sphere(
-  #     center: Point3(x: 0.0, y: 0.25, z: -1.0),
-  #     radius: -0.2,
-  #     material: Material(
-  #       variant: mvDielectric,
-  #       dielectric: Dielectric(refractiveIndex: 1.5)
-  #     )
-  #   )
-  # )
+  world.add(
+    Sphere(
+      center: Point3(x: 0.0, y: 0.25, z: -1.0),
+      radius: -0.2,
+      material: Material(
+        variant: mvDielectric,
+        dielectric: Dielectric(refractiveIndex: 1.5)
+      )
+    )
+  )
   world.add(
     Sphere(
       center: Point3(x: 1.0, y: 0.0, z: -1.0),
@@ -96,8 +96,8 @@ proc main =
   const origin = Point3(x: 0.0, y: 0.0, z: 0.0)
   const camera = newCamera(aspect, viewportWidth, focalLength, origin)
 
-  const numSamples = 50
-  const maxDepth = 50
+  const numSamples = 500
+  const maxDepth = 500
 
   var f = open("helloworld.ppm", fmWrite)
   defer: f.close()
