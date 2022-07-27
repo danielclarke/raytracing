@@ -1,7 +1,6 @@
 import std/options
 import std/math
 
-import color
 import vec3
 import point3
 import ray
@@ -30,13 +29,12 @@ func hit*(self: Sphere; ray: Ray; t_min, t_max: float): Option[HitRecord] =
     return none(HitRecord)
 
   let sqrtd = sqrt(determinant)
-  let root = (-halfB - sqrtd) / a
+  var root = (-halfB - sqrtd) / a
   if root < t_min or t_max < root:
-    let root = (-halfB + sqrtd) / a
+    root = (-halfB + sqrtd) / a
     if root < t_min or t_max < root:
       return none(HitRecord)
 
   let p = ray.at(root)
   let normal = (p - self.center) / self.radius
-  return some(HitRecord(p: p, normal: normal, material: self.material,
-      t: root).qualifyNormal(ray, normal))
+  return some(qualifiedHitRecord(ray, p, normal, self.material, root))

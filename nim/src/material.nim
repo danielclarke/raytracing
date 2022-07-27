@@ -1,4 +1,5 @@
 import std/options
+import std/math
 
 import color
 import vec3
@@ -38,13 +39,13 @@ type
     t*: float
     frontFace*: bool
 
-func qualifyNormal*(self: HitRecord; ray: Ray; outwardNormal: Vec3): HitRecord =
+func qualifiedHitRecord*(ray: Ray; p: Point3, outwardNormal: Vec3, material: Material, t: float): HitRecord =
   let frontFace = dot(ray.direction, outwardNormal) < 0.0;
   let normal = if frontFace:
     outwardNormal
   else:
     -outwardNormal
-  result = HitRecord(p: self.p, normal: normal, material: self.material, t: self.t, frontFace: frontFace)
+  result = HitRecord(p: p, normal: normal, material: material, t: t, frontFace: frontFace)
 
 proc scatter(self: Lambertian; ray: Ray; rec: HitRecord): Option[Ray] =
   let scatterDirection = rec.normal + randomUnitVec3()
@@ -54,12 +55,24 @@ proc scatter(self: Lambertian; ray: Ray; rec: HitRecord): Option[Ray] =
     scatterDirection
   some(Ray(origin: rec.p, direction: direction, color: self.albedo))
 
-func scatter(self: Metal; ray: Ray; rec: HitRecord): Option[Ray] =
-  let reflectDirection = ray.direction.unit.reflect(rec.normal)
+proc scatter(self: Metal; ray: Ray; rec: HitRecord): Option[Ray] =
+  let reflectDirection = ray.direction.unit.reflect(rec.normal) + self.fuzz * randomPointInUnitSphere()
   some(Ray(origin: rec.p, direction: reflectDirection, color: self.albedo))
 
+
+func refract*(uv: Vec3, n: Vec3, etai_over_etat: float): Vec3 =
+  let cosTheta = min(dot(-uv, n), 1.0);
+  let rOutPerp = etai_over_etat * (uv + cosTheta * n)
+  let rOutParallel = - (1.0 - rOutPerp.dot(rOutPerp)).abs().sqrt() * n
+  return rOutPerp + rOutParallel
+
 func scatter(self: Dielectric; ray: Ray; rec: HitRecord): Option[Ray] =
-  none(Ray)
+  let refractionRatio = if rec.frontFace:
+    1.0 / self.refractiveIndex
+  else:
+    self.refractiveIndex
+  let refractedDirection = refract(ray.direction.unit, rec.normal, refractionRatio)
+  return some(Ray(origin: rec.p, direction: refractedDirection, color: ray.color))
 
 proc scatter*(self: Material; ray: Ray; rec: HitRecord): Option[Ray] =
   case self.variant
