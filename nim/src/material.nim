@@ -1,5 +1,6 @@
 import std/options
 import std/math
+import std/random
 
 import color
 import vec3
@@ -59,20 +60,30 @@ proc scatter(self: Metal; ray: Ray; rec: HitRecord): Option[Ray] =
   let reflectDirection = ray.direction.unit.reflect(rec.normal) + self.fuzz * randomPointInUnitSphere()
   some(Ray(origin: rec.p, direction: reflectDirection, color: self.albedo))
 
-
-func refract*(uv: Vec3, n: Vec3, etai_over_etat: float): Vec3 =
+func refract(uv: Vec3, n: Vec3, etai_over_etat: float): Vec3 =
   let cosTheta = min(dot(-uv, n), 1.0);
   let rOutPerp = etai_over_etat * (uv + cosTheta * n)
   let rOutParallel = - (1.0 - rOutPerp.dot(rOutPerp)).abs().sqrt() * n
   return rOutPerp + rOutParallel
 
-func scatter(self: Dielectric; ray: Ray; rec: HitRecord): Option[Ray] =
+func reflectance(cosine: float, refIdx: float): float =
+  let r0 = (1.0 - refIdx) / (1.0 + refIdx)
+  let r02 = r0 * r0
+  return r02 + (1.0 - r02) * (1.0 - cosine).pow(5.0)
+
+proc scatter(self: Dielectric; ray: Ray; rec: HitRecord): Option[Ray] =
   let refractionRatio = if rec.frontFace:
     1.0 / self.refractiveIndex
   else:
     self.refractiveIndex
-  let refractedDirection = refract(ray.direction.unit, rec.normal, refractionRatio)
-  return some(Ray(origin: rec.p, direction: refractedDirection, color: ray.color))
+  let cosTheta = min(dot(-ray.direction.unit, rec.normal), 1.0);
+  let sinTheta = sqrt(1.0 - cosTheta * cosTheta)
+
+  if 1.0 < refractionRatio * sinTheta or rand(1.0) < reflectance(cosTheta, refractionRatio):
+    return some(Ray(origin: rec.p, direction: ray.direction.reflect(rec.normal), color: ray.color))
+  else:
+    let refractedDirection = refract(ray.direction.unit, rec.normal, refractionRatio)
+    return some(Ray(origin: rec.p, direction: refractedDirection, color: ray.color))
 
 proc scatter*(self: Material; ray: Ray; rec: HitRecord): Option[Ray] =
   case self.variant

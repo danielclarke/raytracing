@@ -53,8 +53,8 @@ proc main =
       center: Point3(x: 0.0, y: 0.0, z: -1.0),
       radius: 0.5,
       material: Material(
-        variant: mvDielectric,
-        dielectric: Dielectric(refractiveIndex: 1.5)
+        variant: mvLambertian,
+        lambertian: Lambertian(albedo: Color(x: 0.1, y: 0.2, z: 0.5))
       )
     )
   )
@@ -68,13 +68,23 @@ proc main =
       )
     )
   )
+  # world.add(
+  #   Sphere(
+  #     center: Point3(x: 0.0, y: 0.25, z: -1.0),
+  #     radius: -0.2,
+  #     material: Material(
+  #       variant: mvDielectric,
+  #       dielectric: Dielectric(refractiveIndex: 1.5)
+  #     )
+  #   )
+  # )
   world.add(
     Sphere(
       center: Point3(x: 1.0, y: 0.0, z: -1.0),
       radius: 0.5,
       material: Material(
         variant: mvMetal,
-        metal: Metal(albedo: Color(x: 0.8, y: 0.6, z: 0.2), fuzz: 1.0)
+        metal: Metal(albedo: Color(x: 0.8, y: 0.6, z: 0.2), fuzz: 0.0)
       )
     )
   )
