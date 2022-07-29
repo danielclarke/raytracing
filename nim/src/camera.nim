@@ -10,26 +10,29 @@ type
     origin: Point3
     horizontal, vertical, lowerLeftCorner: Vec3
 
-func newCamera*(verticalFOV, aspect, focalLength: float, origin: Point3): Camera =
-  let height = 2.0 * tan(verticalFOV)
+func newCamera*(verticalFOV, aspect, focalLength: float, lookFrom, lookAt, vUp: Point3): Camera =
+  # let theta = verticalFOV * PI / 180.0
+  let height = 2.0 * tan(verticalFOV / 2)
   let width = aspect * height
-  let horizontal = Vec3(x: width, y: 0.0, z: 0.0)
-  let vertical = Vec3(x: 0.0, y: height, z: 0.0)
+
+  let w = (lookFrom - lookAt).unit()
+  let u = vUp.cross(w).unit()
+  let v = w.cross(u)
+
   Camera(
     aspect: aspect,
     height: height,
     width: width,
     focalLength: focalLength,
-    origin: origin,
-    horizontal: horizontal,
-    vertical: vertical,
-    lowerLeftCorner: origin - horizontal / 2.0 - vertical / 2.0 - Vec3(x: 0.0,
-        y: 0.0, z: focalLength)
+    origin: lookFrom,
+    horizontal: width * u,
+    vertical: height * v,
+    lowerLeftCorner: lookFrom - (width * u) / 2.0 - (height * v) / 2.0 - w
   )
 
-func getRay*(self: Camera; u, v: float): Ray =
+func getRay*(self: Camera; s, t: float): Ray =
   Ray(
     origin: self.origin,
-    direction: self.lowerLeftCorner + u * self.horizontal + v * self.vertical - self.origin,
+    direction: self.lowerLeftCorner + s * self.horizontal + t * self.vertical - self.origin,
     color: Color(x: 1.0, y: 1.0, z: 1.0)
   )

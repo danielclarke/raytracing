@@ -92,11 +92,11 @@ proc main =
 
   # camera
   const focalLength = 1.0
-  const origin = Point3(x: 0.0, y: 0.0, z: 0.0)
-  const camera = newCamera(PI / 4.0, aspect, focalLength, origin)
+  const camera = newCamera(PI / 8.0, aspect, focalLength,
+      Point3(x: -2.0, y: 2.0, z: 1.0), Point3(x: 0.0, y: 0.0, z: -1.0), Point3(x: 0.0, y: 1.0, z: 0.0))
 
-  const numSamples = 50
-  const maxDepth = 50
+  const numSamples = 500
+  const maxDepth = 500
 
   var f = open("helloworld.ppm", fmWrite)
   defer: f.close()
