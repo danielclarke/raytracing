@@ -51,7 +51,7 @@ proc main =
   )
   world.add(
     Sphere(
-      center: Point3(x: -1.0, y: 0.0, z: -1.0),
+      center: Point3(x: 0.0, y: 0.0, z: -1.0),
       radius: 0.5,
       material: Material(
         variant: mvLambertian,
@@ -61,21 +61,21 @@ proc main =
   )
   world.add(
     Sphere(
-      center: Point3(x: 0.0, y: 0.25, z: -1.0),
+      center: Point3(x: -1.0, y: 0.0, z: -1.0),
       radius: 0.5,
       material: Material(
         variant: mvDielectric,
-        dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 1.5)
+        dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 2.5)
       )
     )
   )
   world.add(
     Sphere(
-      center: Point3(x: 0.0, y: 0.25, z: -1.0),
+      center: Point3(x: -1.0, y: 0.0, z: -1.0),
       radius: -0.2,
       material: Material(
         variant: mvDielectric,
-        dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 1.5)
+        dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 2.5)
       )
     )
   )
@@ -92,8 +92,12 @@ proc main =
 
   # camera
   const focalLength = 1.0
-  const camera = newCamera(PI / 8.0, aspect, focalLength,
-      Point3(x: -2.0, y: 2.0, z: 1.0), Point3(x: 0.0, y: 0.0, z: -1.0), Point3(x: 0.0, y: 1.0, z: 0.0))
+  const aperture = 2.0
+  const lookFrom = Point3(x: -2.0, y: 2.0, z: 1.0)
+  const lookAt = Point3(x: 0.0, y: 0.0, z: -1.0)
+  const distToFocus = (lookFrom - lookAt).mag()
+  const camera = newCamera(PI / 8.0, aspect, focalLength, aperture, distToFocus,
+      lookFrom, lookAt, Point3(x: 0.0, y: 1.0, z: 0.0))
 
   const numSamples = 500
   const maxDepth = 500

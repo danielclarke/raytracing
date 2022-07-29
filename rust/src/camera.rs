@@ -15,8 +15,9 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(aspect: f32, width: f32, focal_length: f32, origin: Point3) -> Camera {
-        let height = width / aspect;
+    pub fn new(vertical_fov_rad: f32, aspect: f32, focal_length: f32, origin: Point3) -> Camera {
+        let height = 2.0 * (vertical_fov_rad / 2.0).tan();
+        let width = aspect * height;
         let horizontal = Vec3 {
             x: width,
             y: 0.0,

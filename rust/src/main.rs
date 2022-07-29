@@ -21,10 +21,10 @@ use ray::Ray;
 use sphere::Sphere;
 use world::World;
 
-fn ray_color(ray: &Ray, world: &World, depth: i32, log: bool) -> Color {
-    if log {
-        println!("{:?}", ray);
-    }
+fn ray_color(ray: &Ray, world: &World, depth: i32) -> Color {
+    // if log {
+    //     println!("{:?}", ray);
+    // }
     if depth <= 0 {
         return Color {
             x: 1.0,
@@ -35,10 +35,9 @@ fn ray_color(ray: &Ray, world: &World, depth: i32, log: bool) -> Color {
         let hr = world.hit(ray, 0.001, f32::INFINITY);
         if hr.is_some() {
             let hit_record = hr.unwrap();
-            // let target = hit_record.p + utils::random_point_in_unit_hemisphere(hit_record.normal);
             let scattered = hit_record.material.scatter(ray, &hit_record);
             if scattered.is_some() {
-                return ray_color(&scattered.as_ref().unwrap(), world, depth - 1, log)
+                return ray_color(&scattered.as_ref().unwrap(), world, depth - 1)
                     * scattered.as_ref().unwrap().color;
             } else {
                 Color {
@@ -144,18 +143,16 @@ fn main() -> std::io::Result<()> {
         ],
     };
 
-    const VIEWPORT_HEIGHT: f32 = 2.0;
-    const VIEWPORT_WIDTH: f32 = ASPECT as f32 * VIEWPORT_HEIGHT;
     const FOCAL_LENGTH: f32 = 1.0;
     const ORIGIN: Point3 = Point3 {
         x: 0.0,
         y: 0.0,
         z: 0.0,
     };
-    let camera: Camera = Camera::new(ASPECT, VIEWPORT_WIDTH, FOCAL_LENGTH, ORIGIN);
+    let camera: Camera = Camera::new(std::f32::consts::PI / 2.0, ASPECT, FOCAL_LENGTH, ORIGIN);
 
-    const NUM_SAMPLES: i32 = 50;
-    const MAX_DEPTH: i32 = 50;
+    const NUM_SAMPLES: i32 = 500;
+    const MAX_DEPTH: i32 = 500;
 
     let file = File::create("helloworld.ppm")?;
     let mut file = LineWriter::new(file);
@@ -181,12 +178,12 @@ fn main() -> std::io::Result<()> {
                 let u = (i as f32 + rand::random::<f32>()) / (IM_WIDTH - 1) as f32;
                 let v = ((IM_HEIGHT - j) as f32 + rand::random::<f32>()) / (IM_HEIGHT - 1) as f32;
                 let ray = camera.get_ray(u, v);
-                let log = if i == IM_WIDTH / 2 && j == IM_HEIGHT / 2 {
-                    true
-                } else {
-                    false
-                };
-                color += ray_color(&ray, &world, MAX_DEPTH, log) * ray.color;
+                // let log = if i == IM_WIDTH / 2 && j == IM_HEIGHT / 2 {
+                //     true
+                // } else {
+                //     false
+                // };
+                color += ray_color(&ray, &world, MAX_DEPTH) * ray.color;
             }
             file.write_all(color.ppm(NUM_SAMPLES).as_bytes())?;
             file.write_all("\n".as_bytes())?;

@@ -82,7 +82,7 @@ func reflect*(v, n: Vec3): Vec3 {.inline.} =
 
 func nearZero*(v: Vec3): bool {.inline.} =
   let s = 1e-8
-  abs(v.x) < s and abs(v.y) < s and abs(v.z) < s
+  return abs(v.x) < s and abs(v.y) < s and abs(v.z) < s
 
 proc randomVec3*(min, max: Vec3): Vec3 {.inline.} =
   Vec3(x: rand(max.x - min.x) + min.x, y: rand(max.y - min.y) + min.y, z: rand(
@@ -93,7 +93,12 @@ proc randomPointInUnitSphere*(): Vec3 {.inline.} =
   let theta = rand(2.0 * PI)
   let phi = rand(2.0 * PI)
 
-  Vec3(x: r * sin(phi) * cos(theta), y: r * sin(phi) * sin(theta), z: r * cos(phi))
+  return Vec3(x: r * sin(phi) * cos(theta), y: r * sin(phi) * sin(theta), z: r * cos(phi))
+
+proc randomPointInUnitDisc*(): Vec3 {.inline.} =
+  let r = rand(1.0)
+  let theta = rand(2.0 * PI)
+  return Vec3(x: r * cos(theta), y: r * sin(theta), z: 0.0)
 
 proc randomUnitVec3*(): Vec3 =
   randomPointInUnitSphere().unit()
