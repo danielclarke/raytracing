@@ -38,21 +38,69 @@ proc main =
   const imHeight = (imWidth / aspect).int
 
   # world
+  let dimA = 5
+  let dimB = 5
   var world: World
+  for a in -dimA ..< dimA:
+    for b in -dimB ..< dimB:
+      let center = Vec3(x: a.float + 0.9 * rand(1.0), y: 0.2, z: b.float + 0.9 * rand(1.0))
+
+      let r = rand(1.0)
+      let material = if r < 0.8: 
+        Material(
+          variant: mvLambertian,
+          lambertian: Lambertian(albedo: randomVec3(zerosVec3(), onesVec3()))
+        )
+      elif r < 0.95:
+        Material(
+          variant: mvMetal,
+          metal: Metal(albedo: randomVec3(zerosVec3(), onesVec3()), fuzz: rand(1.0))
+        )
+      else:
+        Material(
+          variant: mvDielectric,
+          dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 2.5)
+        )
+
+      # let material = case rand(1.0):
+      #   of 0.0 ..< 0.8:
+      #     Material(
+      #       variant: mvLambertian,
+      #       lambertian: Lambertian(albedo: randomVec3(zerosVec3(), onesVec3()))
+      #     )
+      #   of 0.8 ..< 0.95:
+      #     Material(
+      #       variant: mvMetal,
+      #       metal: Metal(albedo: randomVec3(zerosVec3(), onesVec3()), fuzz: rand(1.0))
+      #     )
+      #   else:
+      #     Material(
+      #       variant: mvDielectric,
+      #       dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 2.5)
+      #     )
+      world.add(
+        Sphere(
+          center: center,
+          radius: 0.2,
+          material: material
+        )
+      )
+
+
   world.add(
     Sphere(
-      center: Point3(x: 0.0, y: -100.5, z: -1.0),
-      radius: 100.0,
+      center: Point3(x: 0.0, y: -1000, z: -1.0),
+      radius: 1000.0,
       material: Material(
         variant: mvLambertian,
-        lambertian: Lambertian(albedo: Color(x: 0.8, y: 0.8, z: 0.0))
+        lambertian: Lambertian(albedo: Color(x: 0.5, y: 0.5, z: 0.5))
       )
     )
   )
   world.add(
     Sphere(
-      center: Point3(x: 0.0, y: 0.0, z: -1.0),
-      radius: 0.5,
+      center: Point3(x: -4.0, y: 1.0, z: 0.0),
+      radius: 1.0,
       material: Material(
         variant: mvLambertian,
         lambertian: Lambertian(albedo: Color(x: 0.1, y: 0.2, z: 0.5))
@@ -61,8 +109,8 @@ proc main =
   )
   world.add(
     Sphere(
-      center: Point3(x: -1.0, y: 0.0, z: -1.0),
-      radius: 0.5,
+      center: Point3(x: 0.0, y: 1.0, z: 0.0),
+      radius: 1.0,
       material: Material(
         variant: mvDielectric,
         dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 2.5)
@@ -71,8 +119,8 @@ proc main =
   )
   world.add(
     Sphere(
-      center: Point3(x: -1.0, y: 0.0, z: -1.0),
-      radius: -0.2,
+      center: Point3(x: 0.0, y: 1.0, z: 0.0),
+      radius: -0.4,
       material: Material(
         variant: mvDielectric,
         dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 2.5)
@@ -81,8 +129,8 @@ proc main =
   )
   world.add(
     Sphere(
-      center: Point3(x: 1.0, y: 0.0, z: -1.0),
-      radius: 0.5,
+      center: Point3(x: 4.0, y: 1.0, z: 0.0),
+      radius: 1.0,
       material: Material(
         variant: mvMetal,
         metal: Metal(albedo: Color(x: 0.8, y: 0.6, z: 0.2), fuzz: 0.0)
@@ -92,10 +140,10 @@ proc main =
 
   # camera
   const focalLength = 1.0
-  const aperture = 2.0
-  const lookFrom = Point3(x: -2.0, y: 2.0, z: 1.0)
-  const lookAt = Point3(x: 0.0, y: 0.0, z: -1.0)
-  const distToFocus = (lookFrom - lookAt).mag()
+  const aperture = 0.1
+  const lookFrom = Point3(x: 9.0, y: 2.0, z: 3.0)
+  const lookAt = Point3(x: 0.0, y: 0.0, z: 0.0)
+  const distToFocus = 10.0 #(lookFrom - lookAt).mag()
   const camera = newCamera(PI / 8.0, aspect, focalLength, aperture, distToFocus,
       lookFrom, lookAt, Point3(x: 0.0, y: 1.0, z: 0.0))
 
