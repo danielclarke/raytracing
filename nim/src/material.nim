@@ -17,6 +17,7 @@ type
     fuzz*: float
 
   Dielectric* = object
+    albedo*: Color
     refractiveIndex*: float
 
   MaterialVariant* = enum
@@ -83,7 +84,7 @@ proc scatter(self: Dielectric; ray: Ray; rec: HitRecord): Option[Ray] =
     return some(Ray(origin: rec.p, direction: ray.direction.reflect(rec.normal), color: ray.color))
   else:
     let refractedDirection = refract(ray.direction.unit, rec.normal, refractionRatio)
-    return some(Ray(origin: rec.p, direction: refractedDirection, color: ray.color))
+    return some(Ray(origin: rec.p, direction: refractedDirection, color: self.albedo))
 
 proc scatter*(self: Material; ray: Ray; rec: HitRecord): Option[Ray] =
   case self.variant

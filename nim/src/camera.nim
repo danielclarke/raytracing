@@ -1,3 +1,4 @@
+import std/math
 import color
 import point3
 import vec3
@@ -9,8 +10,9 @@ type
     origin: Point3
     horizontal, vertical, lowerLeftCorner: Vec3
 
-func newCamera*(aspect, width, focalLength: float, origin: Point3): Camera =
-  let height = width / aspect
+func newCamera*(verticalFOV, aspect, focalLength: float, origin: Point3): Camera =
+  let height = 2.0 * tan(verticalFOV)
+  let width = aspect * height
   let horizontal = Vec3(x: width, y: 0.0, z: 0.0)
   let vertical = Vec3(x: 0.0, y: height, z: 0.0)
   Camera(

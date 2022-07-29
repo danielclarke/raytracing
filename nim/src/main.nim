@@ -1,3 +1,4 @@
+import std/math
 import std/options
 import std/strformat
 import std/random
@@ -33,7 +34,7 @@ proc main =
 
   # image
   const aspect = 16.0 / 9.0
-  const imWidth = 400 * 3
+  const imWidth = 400
   const imHeight = (imWidth / aspect).int
 
   # world
@@ -64,7 +65,7 @@ proc main =
       radius: 0.5,
       material: Material(
         variant: mvDielectric,
-        dielectric: Dielectric(refractiveIndex: 1.5)
+        dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 1.5)
       )
     )
   )
@@ -74,7 +75,7 @@ proc main =
       radius: -0.2,
       material: Material(
         variant: mvDielectric,
-        dielectric: Dielectric(refractiveIndex: 1.5)
+        dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 1.5)
       )
     )
   )
@@ -90,14 +91,12 @@ proc main =
   )
 
   # camera
-  const viewportHeight = 2.0
-  const viewportWidth = aspect * viewportHeight;
   const focalLength = 1.0
   const origin = Point3(x: 0.0, y: 0.0, z: 0.0)
-  const camera = newCamera(aspect, viewportWidth, focalLength, origin)
+  const camera = newCamera(PI / 4.0, aspect, focalLength, origin)
 
-  const numSamples = 500
-  const maxDepth = 500
+  const numSamples = 50
+  const maxDepth = 50
 
   var f = open("helloworld.ppm", fmWrite)
   defer: f.close()
@@ -105,7 +104,7 @@ proc main =
   f.writeLine(fmt("P3\n{imWidth} {imHeight}\n255\n"))
 
   for j in 0 ..< imHeight:
-    echo fmt("Scan lines remaining {j}")
+    echo fmt("Scan lines remaining {imHeight - j}")
     for i in 0 ..< imWidth:
       var color = Color(x: 0.0, y: 0.0, z: 0.0)
 
