@@ -1,5 +1,4 @@
 import std/math
-import std/random
 import vec3
 
 func degToRad*(deg: float): float =

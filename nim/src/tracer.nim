@@ -1,4 +1,4 @@
-import math, options, strformat, random, threadpool
+import std/[math, options, strformat, random, threadpool]
 {.experimental: "parallel".}
 
 import utils, vec3, point3, color, ray, material, sphere, world, camera
@@ -126,36 +126,33 @@ proc main =
   let camera = newRefCamera(PI / 8.0, aspect, focalLength, aperture, distToFocus,
       lookFrom, lookAt, Point3(x: 0.0, y: 1.0, z: 0.0))
 
-  # let camera = newCamera(PI / 8.0, aspect, focalLength, aperture, distToFocus,
-  #   lookFrom, lookAt, Point3(x: 0.0, y: 1.0, z: 0.0))
-
-  echo("tracing")
   var f = open("helloworld.ppm", fmWrite)
   defer: f.close()
 
-  f.writeLine(fmt("P3\n{imWidth} {imHeight}\n255\n"))
-  var rowBuffer: array[imWidth, Color]
-  for j in 0 ..< imHeight:
-    echo fmt("Scan lines remaining {imHeight - j}")
-    parallel:
+  when defined(threads):
+    f.writeLine(fmt("P3\n{imWidth} {imHeight}\n255\n"))
+    var rowBuffer: array[imWidth, Color]
+    for j in 0 ..< imHeight:
+      echo fmt("Scan lines remaining {imHeight - j}")
+      parallel:
+        for i in 0 ..< imWidth:
+          let pi = i
+          let pj = j
+          rowBuffer[i] = spawn pixelColor(imWidth, imHeight, pi, pj, numSamples, maxDepth, camera, world)
+      for color in rowBuffer:
+        f.writeLine(color.ppm(numSamples))
+  else:
+    f.writeLine(fmt("P3\n{imWidth} {imHeight}\n255\n"))
+    for j in 0 ..< imHeight:
+      echo fmt("Scan lines remaining {imHeight - j}")
       for i in 0 ..< imWidth:
-        let pi = i
-        let pj = j
-        rowBuffer[i] = spawn pixelColor(imWidth, imHeight, pi, pj, numSamples, maxDepth, camera, world)
-    for color in rowBuffer:
-      f.writeLine(color.ppm(numSamples))
-
-  # f.writeLine(fmt("P3\n{imWidth} {imHeight}\n255\n"))
-  # for j in 0 ..< imHeight:
-  #   echo fmt("Scan lines remaining {imHeight - j}")
-  #   for i in 0 ..< imWidth:
-  #     var color = Color(x: 0.0, y: 0.0, z: 0.0)
-  #     for s in 0 ..< numSamples:
-  #       let u = (i.float + rand(1.0)) / (imWidth - 1)
-  #       let v = ((imHeight - j).float + rand(1.0)) / (imHeight - 1)
-  #       let ray = camera[].getRay(u, v)
-  #       color += rayColor(ray, world, maxDepth)
-  #     f.writeLine(color.ppm(numSamples))
+        var color = Color(x: 0.0, y: 0.0, z: 0.0)
+        for s in 0 ..< numSamples:
+          let u = (i.float + rand(1.0)) / (imWidth - 1)
+          let v = ((imHeight - j).float + rand(1.0)) / (imHeight - 1)
+          let ray = camera[].getRay(u, v)
+          color += rayColor(ray, world, maxDepth)
+        f.writeLine(color.ppm(numSamples))
 
   echo "Done"
 
