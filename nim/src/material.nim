@@ -41,7 +41,7 @@ type
     t*: float
     frontFace*: bool
 
-func qualifiedHitRecord*(ray: Ray; p: Point3, outwardNormal: Vec3, material: Material, t: float): HitRecord =
+func qualifiedHitRecord*(ray: Ray; p: Point3; outwardNormal: Vec3; material: Material; t: float): HitRecord =
   let frontFace = dot(ray.direction, outwardNormal) < 0.0;
   let normal = if frontFace:
     outwardNormal
@@ -61,13 +61,13 @@ proc scatter(self: Metal; ray: Ray; rec: HitRecord): Option[Ray] =
   let reflectDirection = ray.direction.unit.reflect(rec.normal) + self.fuzz * randomPointInUnitSphere()
   some(Ray(origin: rec.p, direction: reflectDirection, color: self.albedo))
 
-func refract(uv: Vec3, n: Vec3, etai_over_etat: float): Vec3 =
+func refract(uv: Vec3; n: Vec3; etai_over_etat: float): Vec3 =
   let cosTheta = min(dot(-uv, n), 1.0);
   let rOutPerp = etai_over_etat * (uv + cosTheta * n)
   let rOutParallel = - (1.0 - rOutPerp.dot(rOutPerp)).abs().sqrt() * n
   return rOutPerp + rOutParallel
 
-func reflectance(cosine: float, refIdx: float): float =
+func reflectance(cosine: float; refIdx: float): float =
   let r0 = (1.0 - refIdx) / (1.0 + refIdx)
   let r02 = r0 * r0
   return r02 + (1.0 - r02) * (1.0 - cosine).pow(5.0)
