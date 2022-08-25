@@ -13,6 +13,6 @@ let qualified_hit_record r material point ~t ~outward_normal =
     if front_face then
       outward_normal
     else
-      -1. >>* outward_normal
+      negate outward_normal
   in
   { point; normal; material; t; front_face }

@@ -16,9 +16,7 @@ val ( >>+ ) : t -> t -> t
 
 val ( >>- ) : t -> t -> t
 
-val ( >>* ) : float -> t -> t
-
-val ( >>/ ) : t -> float -> t
+val scale : float -> t -> t
 
 val dot : t -> t -> float
 
@@ -29,5 +27,7 @@ val unit : t -> t
 val close_to_zero : t -> bool
 
 val reflect : t -> normal:t -> t
+
+val negate : t -> t
 
 val print_vec3 : t -> unit

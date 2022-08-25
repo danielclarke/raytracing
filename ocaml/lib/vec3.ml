@@ -20,16 +20,16 @@ let random_unit_vec3 () =
 
 let ( >>+ ) u v = { x = u.x +. v.x; y = u.y +. v.y; z = u.z +. v.z }
 let ( >>- ) u v = { x = u.x -. v.x; y = u.y -. v.y; z = u.z -. v.z }
-let ( >>/ ) v f = { x = v.x /. f; y = v.y /. f; z = v.z /. f }
-let ( >>* ) f v = { x = v.x *. f; y = v.y *. f; z = v.z *. f }
+let scale f v = { x = v.x *. f; y = v.y *. f; z = v.z *. f }
 let dot u v = (u.x *. v.x) +. (u.y *. v.y) +. (u.z *. v.z)
 let mag v = dot v v |> sqrt
-let unit v = v >>/ mag v
+let unit v = scale (1. /. mag v) v
 
 let close_to_zero v =
   let epsilon = 1e-8 in
   abs_float v.x < epsilon && abs_float v.y < epsilon && abs_float v.z < epsilon
 
 
-let reflect v ~normal = v >>- (2. *. dot v normal >>* normal)
+let reflect v ~normal = v >>- scale (2. *. dot v normal) normal
+let negate { x; y; z } = { x = -.x; y = -.y; z = -.z }
 let print_vec3 v = Printf.printf "x = %F; y = %F; z = %F\n%!" v.x v.y v.z

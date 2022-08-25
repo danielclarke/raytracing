@@ -5,7 +5,7 @@ let ( -- ) i j = from i j []
 
 let rec ray_color ray world depth =
   if depth <= 0 then
-    Color.black
+    Color.from_rgb ~r:0. ~g:1. ~b:0.
   else (
     match World.hit world ray ~t_min:0.001 ~t_max:Float.infinity with
     | None ->
@@ -46,11 +46,20 @@ let make_world =
   World.make
     [ { center = { x = 0.; y = 0.0; z = -1.0 }
       ; radius = 0.5
-      ; material = Material.Metal { aldebo = Color.white; fuzz = 0. }
+      ; material = Material.Dielectric { refractive_index = 1.5 }
+      }
+    ; { center = { x = -1.; y = 0.0; z = -1.0 }
+      ; radius = 0.5
+      ; material = Material.Dielectric { refractive_index = 1.5 }
+      }
+    ; { center = { x = 1.; y = 0.0; z = -1.0 }
+      ; radius = 0.5
+      ; material =
+          Material.Metal { aldebo = Color.from_rgb ~r:0.8 ~g:0.6 ~b:0.2; fuzz = 1.0 }
       }
     ; { center = { x = 0.; y = -1000.5; z = -1.0 }
       ; radius = 1000.0
-      ; material = Material.Lambertian { aldebo = Color.from_rgb ~r:0.1 ~g:0.2 ~b:0.5 }
+      ; material = Material.Lambertian { aldebo = Color.from_rgb ~r:0.8 ~g:0.8 ~b:0.0 }
       }
     ]
 
@@ -66,8 +75,8 @@ let make_world =
        ~samples:1) *)
 
 let () =
-  let depth = 500
-  and samples = 100
+  let depth = 50
+  and samples = 50
   and aspect = 16. /. 9.
   and im_width = 400 in
   let im_height = Float.to_int (Int.to_float im_width /. aspect)
