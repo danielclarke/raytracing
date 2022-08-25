@@ -50,8 +50,7 @@ let make_world =
       }
     ; { center = { x = 0.; y = -1000.5; z = -1.0 }
       ; radius = 1000.0
-      ; material =
-          Material.Metal { aldebo = Color.from_rgb ~r:0.1 ~g:0.2 ~b:0.5; fuzz = 1. }
+      ; material = Material.Lambertian { aldebo = Color.from_rgb ~r:0.1 ~g:0.2 ~b:0.5 }
       }
     ]
 

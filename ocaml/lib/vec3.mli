@@ -10,6 +10,8 @@ val zeros : t
 
 val random_vec3_in_unit_sphere : unit -> t
 
+val random_unit_vec3 : unit -> t
+
 val ( >>+ ) : t -> t -> t
 
 val ( >>- ) : t -> t -> t

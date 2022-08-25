@@ -14,6 +14,10 @@ let random_vec3_in_unit_sphere () =
   { x = r *. sin phi *. cos theta; y = r *. sin phi *. sin theta; z = r *. cos phi }
 
 
+let random_unit_vec3 () =
+  { x = Random.float 1.; y = Random.float 1.; z = Random.float 1. }
+
+
 let ( >>+ ) u v = { x = u.x +. v.x; y = u.y +. v.y; z = u.z +. v.z }
 let ( >>- ) u v = { x = u.x -. v.x; y = u.y -. v.y; z = u.z -. v.z }
 let ( >>/ ) v f = { x = v.x /. f; y = v.y /. f; z = v.z /. f }
