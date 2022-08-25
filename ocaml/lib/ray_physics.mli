@@ -1,0 +1,1 @@
+val scatter : Ray.t -> Hit_record.t -> Ray.t option

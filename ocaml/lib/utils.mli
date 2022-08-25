@@ -1,0 +1,1 @@
+val clamp : value:'a -> lower:'a -> upper:'a -> 'a
