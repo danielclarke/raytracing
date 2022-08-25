@@ -27,9 +27,9 @@ fn ray_color(ray: &Ray, world: &World, depth: i32) -> Color {
     // }
     if depth <= 0 {
         return Color {
-            x: 1.0,
+            x: 0.0,
             y: 0.0,
-            z: 1.0,
+            z: 0.0,
         };
     } else {
         let hr = world.hit(ray, 0.001, f32::INFINITY);

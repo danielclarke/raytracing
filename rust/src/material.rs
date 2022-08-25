@@ -1,6 +1,5 @@
 use crate::color::Color;
 use crate::hit_record::HitRecord;
-use crate::point3::Point3;
 use crate::ray::Ray;
 use crate::utils;
 use crate::vec3::Vec3;

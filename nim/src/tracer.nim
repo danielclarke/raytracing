@@ -79,8 +79,8 @@ proc main =
       material: Material(
         variant: mvLambertian,
         lambertian: Lambertian(albedo: Color(x: 0.5, y: 0.5, z: 0.5))
+      )
     )
-  )
   )
   world[].add(
     Sphere(
@@ -89,8 +89,8 @@ proc main =
       material: Material(
         variant: mvLambertian,
         lambertian: Lambertian(albedo: Color(x: 0.1, y: 0.2, z: 0.5))
+      )
     )
-  )
   )
   world[].add(
     Sphere(
@@ -99,8 +99,8 @@ proc main =
       material: Material(
         variant: mvDielectric,
         dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 1.5)
+      )
     )
-  )
   )
   world[].add(
     Sphere(
@@ -109,8 +109,8 @@ proc main =
       material: Material(
         variant: mvMetal,
         metal: Metal(albedo: Color(x: 0.8, y: 0.6, z: 0.2), fuzz: 0.0)
+      )
     )
-  )
   )
 
   # camera

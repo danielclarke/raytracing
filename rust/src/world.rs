@@ -1,5 +1,4 @@
 use crate::hit_record::HitRecord;
-use crate::material::Material;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 
