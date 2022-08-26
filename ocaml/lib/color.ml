@@ -7,6 +7,7 @@ type t =
 let from_rgb ~r ~g ~b = { r; g; b }
 let white = { r = 1.; g = 1.; b = 1. }
 let black = { r = 0.; g = 0.; b = 0. }
+let random () = { r = Random.float 1.; g = Random.float 1.; b = Random.float 1. }
 let add c c' = { r = c.r +. c'.r; g = c.g +. c'.g; b = c.b +. c'.b }
 let combine c c' = { r = c.r *. c'.r; g = c.g *. c'.g; b = c.b *. c'.b }
 let scale c f = { r = c.r *. f; g = c.g *. f; b = c.b *. f }

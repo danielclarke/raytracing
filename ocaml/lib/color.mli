@@ -3,6 +3,7 @@ type t
 val from_rgb : r:float -> g:float -> b:float -> t
 val white : t
 val black : t
+val random : unit -> t
 val add : t -> t -> t
 val combine : t -> t -> t
 val lerp : u:t -> v:t -> fraction:float -> t

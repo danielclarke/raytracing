@@ -47,25 +47,46 @@ let print_pixel_color ~camera ~world ~depth ~samples ~im_width ~im_height x y =
 
 
 let make_world =
-  World.make
-    [ { center = { x = 0.; y = 0.0; z = -1.0 }
-      ; radius = 0.5
-      ; material = Material.Dielectric { refractive_index = 1.5 }
-      }
-    ; { center = { x = -1.; y = 0.0; z = -1.0 }
-      ; radius = 0.5
-      ; material = Material.Dielectric { refractive_index = 1.5 }
-      }
-    ; { center = { x = 1.; y = 0.0; z = -1.0 }
-      ; radius = 0.5
-      ; material =
-          Material.Metal { aldebo = Color.from_rgb ~r:0.8 ~g:0.6 ~b:0.2; fuzz = 1.0 }
-      }
-    ; { center = { x = 0.; y = -1000.5; z = -1.0 }
-      ; radius = 1000.0
-      ; material = Material.Lambertian { aldebo = Color.from_rgb ~r:0.8 ~g:0.8 ~b:0.0 }
-      }
-    ]
+  let world =
+    World.make
+      [ { center = { x = -4.; y = 1.0; z = 0.0 }
+        ; radius = 1.0
+        ; material = Material.Lambertian { aldebo = Color.from_rgb ~r:0.1 ~g:0.2 ~b:0.5 }
+        }
+      ; { center = { x = 0.; y = 1.0; z = 0.0 }
+        ; radius = 1.0
+        ; material = Material.Dielectric { refractive_index = 1.5 }
+        }
+      ; { center = { x = 4.; y = 1.0; z = 0.0 }
+        ; radius = 1.0
+        ; material =
+            Material.Metal { aldebo = Color.from_rgb ~r:0.8 ~g:0.6 ~b:0.2; fuzz = 0.0 }
+        }
+      ; { center = { x = 0.; y = -1000.; z = -1.0 }
+        ; radius = 1000.0
+        ; material = Material.Lambertian { aldebo = Color.from_rgb ~r:0.5 ~g:0.5 ~b:0.5 }
+        }
+      ]
+  in
+  let rec add_spheres world num =
+    if num <= 0 then
+      world
+    else
+      (let rd = Point.random_point_in_unit_disc () in
+       let center = ({ x = 10. *. rd.x; y = 0.2; z = 10. *. rd.y } : Point.t) in
+       let r = Random.float 1. in
+       let material =
+         if r < 0.8 then
+           Material.Lambertian { aldebo = Color.random () }
+         else if r < 0.95 then
+           Material.Metal { aldebo = Color.random (); fuzz = 0.1 }
+         else
+           Material.Dielectric { refractive_index = 1.5 }
+       in
+       add_spheres (World.add world { center; radius = 0.2; material }))
+        (num - 1)
+  in
+  add_spheres world 100
 
 
 (* let hw_image ~im_width ~im_height x y =
@@ -79,8 +100,8 @@ let make_world =
        ~samples:1) *)
 
 let () =
-  let depth = 50
-  and samples = 50
+  let depth = 500
+  and samples = 500
   and aspect = 16. /. 9.
   and im_width = 400 in
   let im_height = Float.to_int (Int.to_float im_width /. aspect)
