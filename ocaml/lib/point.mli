@@ -7,7 +7,7 @@ type t =
 val origin : t
 
 val random_point_in_unit_sphere : unit -> t
-
+val random_point_in_unit_disc : unit -> t
 val translate : t -> Vec3.t -> t
 
 val distance : t -> t -> Vec3.t

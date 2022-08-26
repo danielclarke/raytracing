@@ -13,6 +13,12 @@ let random_point_in_unit_sphere () =
   { x = r *. sin phi *. cos theta; y = r *. sin phi *. sin theta; z = r *. cos phi }
 
 
+let random_point_in_unit_disc () =
+  let r = Random.float 1.
+  and theta = Random.float (2. *. Float.pi) in
+  { x = r *. cos theta; y = r *. sin theta; z = 0.0 }
+
+
 let translate t v =
   let { x; y; z } = t
   and ({ x = u; y = v; z = w } : Vec3.t) = v in

@@ -14,7 +14,7 @@ proc rayColor(ray: Ray; world: ref World; depth: int): Color =
       if scatteredRay.isSome():
         return scatteredRay.get().color * rayColor(scatteredRay.get(), world, depth - 1)
       else:
-        return Color(x: 1.0, y: 0.0, z: 0.0)
+        return Color(x: 0.0, y: 0.0, z: 0.0)
     else:
       let t = (ray.direction.unit.y + 1.0) * 0.5
       return lerp(Color(x: 1.0, y: 1.0, z: 1.0), Color(x: 0.5, y: 0.7,

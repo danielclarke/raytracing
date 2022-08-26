@@ -18,6 +18,8 @@ val ( >>- ) : t -> t -> t
 
 val scale : float -> t -> t
 
+val cross : t -> t -> t
+
 val dot : t -> t -> float
 
 val mag : t -> float

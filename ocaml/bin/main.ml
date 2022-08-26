@@ -5,11 +5,11 @@ let ( -- ) i j = from i j []
 
 let rec ray_color ray world depth =
   if depth <= 0 then
-    Color.from_rgb ~r:0. ~g:1. ~b:0.
+    Color.black
   else (
     match World.hit world ray ~t_min:0.001 ~t_max:Float.infinity with
     | None ->
-      let fraction = (Vec3.unit ray.Ray.direction).y *. 0.5 in
+      let fraction = ((Vec3.unit ray.Ray.direction).y +. 1.0) *. 0.5 in
       Color.lerp ~u:Color.white ~v:(Color.from_rgb ~r:0.5 ~g:0.7 ~b:1.0) ~fraction
     | Some hit_record ->
       (match Ray_physics.scatter ray hit_record with
@@ -22,8 +22,12 @@ let scene_camera aspect =
   Camera.make
     ~aspect
     ~focal_length:1.0
-    ~vertical_fov_rad:(Float.pi /. 2.)
-    ~origin:Point.origin
+    ~aperture:0.1
+    ~vertical_fov_rad:(Float.pi /. 8.)
+    ~origin:({ x = 9.; y = 2.; z = 3. } : Point.t)
+    ~focus_distance:10.0
+    ~look_at:Point.origin
+    ~v_up:({ x = 0.; y = 1.; z = 0. } : Vec3.t)
 
 
 let print_pixel_color ~camera ~world ~depth ~samples ~im_width ~im_height x y =
