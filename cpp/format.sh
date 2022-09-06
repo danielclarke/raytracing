@@ -1,0 +1,1 @@
+clang-format -i src/* -style="{BasedOnStyle: llvm, IndentWidth: 4, TabWidth: 4, UseTab: Always}"
