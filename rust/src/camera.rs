@@ -29,13 +29,13 @@ impl Camera {
             z: 0.0,
         };
         Camera {
-            aspect: aspect,
-            height: height,
-            width: width,
-            focal_length: focal_length,
-            origin: origin,
-            horizontal: horizontal,
-            vertical: vertical,
+            aspect,
+            height,
+            width,
+            focal_length,
+            origin,
+            horizontal,
+            vertical,
             lower_left_corner: origin
                 - horizontal / 2.0
                 - vertical / 2.0
@@ -52,11 +52,7 @@ impl Camera {
             origin: self.origin,
             direction: self.lower_left_corner + u * self.horizontal + v * self.vertical
                 - self.origin,
-            color: Color {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            },
+            color: Color::white(),
         }
     }
 }

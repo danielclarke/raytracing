@@ -1,27 +1,16 @@
-use rand::prelude::*;
-
 use crate::point3::Point3;
 use crate::vec3::Vec3;
 
 const PI: f32 = std::f32::consts::PI;
 
-pub fn deg_2_rad(deg: f32) -> f32 {
-    deg * PI / 180.0
-}
-
-pub fn rad_2_deg(rad: f32) -> f32 {
-    rad * 180.0 / PI
-}
-
 pub fn clamp(f: f32, min: f32, max: f32) -> f32 {
-    let result = if f < min {
+    if f < min {
         min
     } else if max < f {
         max
     } else {
         f
-    };
-    result
+    }
 }
 
 pub fn random_point_in_unit_sphere() -> Point3 {

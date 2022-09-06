@@ -14,7 +14,7 @@ pub struct HitRecord {
 impl HitRecord {
     pub fn qualified_hit_record(
         ray: &Ray,
-        m: Material,
+        material: Material,
         p: Point3,
         t: f32,
         outward_normal: Vec3,
@@ -26,11 +26,11 @@ impl HitRecord {
             -outward_normal
         };
         HitRecord {
-            p: p,
-            normal: normal,
-            material: m,
-            t: t,
-            front_face: front_face,
+            p,
+            normal,
+            material,
+            t,
+            front_face,
         }
     }
 }

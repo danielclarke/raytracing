@@ -2,7 +2,6 @@ use crate::hit_record::HitRecord;
 use crate::material::Material;
 use crate::point3::Point3;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
 
 pub struct Sphere {
     pub center: Point3,
@@ -11,14 +10,6 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn unit() -> Sphere {
-        Sphere {
-            center: Vec3::zeros(),
-            radius: 1.0,
-            material: Material::None,
-        }
-    }
-
     pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = ray.origin - self.center;
         let a = ray.direction.dot(ray.direction);

@@ -1,27 +1,28 @@
 import std/[math, options, strformat, random, threadpool]
 {.experimental: "parallel".}
 
+import fusion/matching
+{.experimental: "caseStmtMacros".}
+
 import utils, vec3, point3, color, ray, material, sphere, world, camera
 
 proc rayColor(ray: Ray; world: ref World; depth: int): Color =
   if depth <= 0:
-    result = Color(x: 0.0, y: 0.0, z: 0.0)
+    result = black()
   else:
-    let hr = world[].hit(ray, 0.001, Inf)
-    if hr.isSome():
-      let hitRecord = hr.get()
-      let scatteredRay = hitRecord.material.scatter(ray, hitRecord)
-      if scatteredRay.isSome():
-        return scatteredRay.get().color * rayColor(scatteredRay.get(), world, depth - 1)
-      else:
-        return Color(x: 0.0, y: 0.0, z: 0.0)
-    else:
+    case world[].hit(ray, 0.001, Inf)
+    of Some(@hitRecord):
+      case hitRecord.material.scatter(ray, hitRecord)
+      of Some(@scatteredRay):
+        return scatteredRay.color * rayColor(scatteredRay, world, depth - 1)
+      of None():
+        return black()
+    of None():
       let t = (ray.direction.unit.y + 1.0) * 0.5
-      return lerp(Color(x: 1.0, y: 1.0, z: 1.0), Color(x: 0.5, y: 0.7,
-          z: 1.0), t)
+      return lerp(white(), Color(x: 0.5, y: 0.7, z: 1.0), t)
 
 proc pixelColor(imWidth, imHeight, i, j, numSamples, maxDepth: int; camera: ref Camera; world: ref World): Color =
-  var color = Color(x: 0.0, y: 0.0, z: 0.0)
+  var color = black()
   for s in 0 ..< numSamples:
     let u = (i.float + rand(1.0)) / (imWidth - 1).float
     let v = ((imHeight - j).float + rand(1.0)) / (imHeight - 1).float
@@ -60,7 +61,7 @@ proc main =
       else:
         Material(
           variant: mvDielectric,
-          dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 2.5)
+          dielectric: Dielectric(albedo: white(), refractiveIndex: 2.5)
         )
 
       world[].add(
@@ -98,7 +99,7 @@ proc main =
       radius: 1.0,
       material: Material(
         variant: mvDielectric,
-        dielectric: Dielectric(albedo: Color(x: 1.0, y: 1.0, z: 1.0), refractiveIndex: 1.5)
+        dielectric: Dielectric(albedo: white(), refractiveIndex: 1.5)
       )
     )
   )
@@ -120,7 +121,7 @@ proc main =
     lookFrom = Point3(x: 9.0, y: 2.0, z: 3.0)
     lookAt = Point3(x: 0.0, y: 0.0, z: 0.0)
     distToFocus = 10.0 #(lookFrom - lookAt).mag()
-    numSamples = 500
+    numSamples = 100
     maxDepth = 500
 
   let camera = newRefCamera(PI / 8.0, aspect, focalLength, aperture, distToFocus,
@@ -143,16 +144,20 @@ proc main =
         f.writeLine(color.ppm(numSamples))
   else:
     f.writeLine(fmt("P3\n{imWidth} {imHeight}\n255\n"))
+    # echo "P3"
+    # echo fmt"{imWidth} {imHeight}"
+    # echo "255"
     for j in 0 ..< imHeight:
-      echo fmt("Scan lines remaining {imHeight - j}")
+      # echo fmt("Scan lines remaining {imHeight - j}")
       for i in 0 ..< imWidth:
-        var color = Color(x: 0.0, y: 0.0, z: 0.0)
+        var color = black()
         for s in 0 ..< numSamples:
           let u = (i.float + rand(1.0)) / (imWidth - 1)
           let v = ((imHeight - j).float + rand(1.0)) / (imHeight - 1)
           let ray = camera[].getRay(u, v)
           color += rayColor(ray, world, maxDepth)
         f.writeLine(color.ppm(numSamples))
+        # echo color.ppm(numSamples)
 
   echo "Done"
 

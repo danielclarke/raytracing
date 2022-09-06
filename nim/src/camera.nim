@@ -78,5 +78,5 @@ proc getRay*(self: Camera; s, t: float): Ray =
   return Ray(
     origin: self.origin + offset,
     direction: self.lowerLeftCorner + s * self.horizontal + t * self.vertical - self.origin - offset,
-    color: Color(x: 1.0, y: 1.0, z: 1.0)
+    color: white()
   )

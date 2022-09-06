@@ -68,25 +68,35 @@ let make_world =
         }
       ]
   in
-  let rec add_spheres world num =
-    if num <= 0 then
+  let add_sphere world x z =
+    let rd = Point.random_point_in_unit_disc () in
+    let center =
+      ({ x = Int.to_float x +. (0.9 *. rd.x)
+       ; y = 0.2
+       ; z = Int.to_float z +. (0.9 *. rd.y)
+       }
+        : Point.t)
+    in
+    let r = Random.float 1. in
+    let material =
+      if r < 0.8 then
+        Material.Lambertian { aldebo = Color.random () }
+      else if r < 0.95 then
+        Material.Metal { aldebo = Color.random (); fuzz = 0.1 }
+      else
+        Material.Dielectric { refractive_index = 1.5 }
+    in
+    World.add world { center; radius = 0.2; material }
+  in
+  let rec add_spheres world x_min x_max z_min z_max x z =
+    (* Printf.printf "sphere: %i %i\n%!" x z; *)
+    let x, z = if z >= z_max then x + 1, z_min else x, z in
+    if x >= x_max then
       world
     else
-      (let rd = Point.random_point_in_unit_disc () in
-       let center = ({ x = 10. *. rd.x; y = 0.2; z = 10. *. rd.y } : Point.t) in
-       let r = Random.float 1. in
-       let material =
-         if r < 0.8 then
-           Material.Lambertian { aldebo = Color.random () }
-         else if r < 0.95 then
-           Material.Metal { aldebo = Color.random (); fuzz = 0.1 }
-         else
-           Material.Dielectric { refractive_index = 1.5 }
-       in
-       add_spheres (World.add world { center; radius = 0.2; material }))
-        (num - 1)
+      add_spheres (add_sphere world x z) x_min x_max z_min z_max x (z + 1)
   in
-  add_spheres world 100
+  add_spheres world (-10) 9 (-10) 9 (-10) (-10)
 
 
 (* let hw_image ~im_width ~im_height x y =
@@ -101,7 +111,7 @@ let make_world =
 
 let () =
   let depth = 500
-  and samples = 500
+  and samples = 100
   and aspect = 16. /. 9.
   and im_width = 400 in
   let im_height = Float.to_int (Int.to_float im_width /. aspect)

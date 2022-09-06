@@ -21,46 +21,31 @@ use ray::Ray;
 use sphere::Sphere;
 use world::World;
 
-fn ray_color(ray: &Ray, world: &World, depth: i32) -> Color {
+fn ray_color(ray: Ray, world: &World, depth: i32) -> Color {
     // if log {
     //     println!("{:?}", ray);
     // }
     if depth <= 0 {
-        return Color {
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-        };
+        Color::black()
     } else {
-        let hr = world.hit(ray, 0.001, f32::INFINITY);
-        if hr.is_some() {
-            let hit_record = hr.unwrap();
-            let scattered = hit_record.material.scatter(ray, &hit_record);
-            if scattered.is_some() {
-                return ray_color(&scattered.as_ref().unwrap(), world, depth - 1)
-                    * scattered.as_ref().unwrap().color;
+        let hr = world.hit(&ray, 0.001, f32::INFINITY);
+        if let Some(hit_record) = hr {
+            if let Some(scattered) = hit_record.material.scatter(&ray, &hit_record) {
+                scattered.color * ray_color(scattered, world, depth - 1)
             } else {
-                Color {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0,
-                }
+                Color::black()
             }
         } else {
             let t = (ray.direction.unit().y + 1.0) * 0.5;
-            return utils::lerp(
-                Color {
-                    x: 1.0,
-                    y: 1.0,
-                    z: 1.0,
-                },
+            utils::lerp(
+                Color::white(),
                 Color {
                     x: 0.5,
                     y: 0.7,
                     z: 1.0,
                 },
                 t,
-            );
+            )
         }
     }
 }
@@ -169,11 +154,7 @@ fn main() -> std::io::Result<()> {
     for j in 0..IM_HEIGHT {
         // println!("Scan lines remaining {}", j);
         for i in 0..IM_WIDTH {
-            let mut color = Color {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            };
+            let mut color = Color::black();
             for _ in 0..NUM_SAMPLES {
                 let u = (i as f32 + rand::random::<f32>()) / (IM_WIDTH - 1) as f32;
                 let v = ((IM_HEIGHT - j) as f32 + rand::random::<f32>()) / (IM_HEIGHT - 1) as f32;
@@ -183,10 +164,9 @@ fn main() -> std::io::Result<()> {
                 // } else {
                 //     false
                 // };
-                color += ray_color(&ray, &world, MAX_DEPTH) * ray.color;
+                color += ray_color(ray, &world, MAX_DEPTH);
             }
-            file.write_all(color.ppm(NUM_SAMPLES).as_bytes())?;
-            file.write_all("\n".as_bytes())?;
+            file.write_all(format!("{color}\n", color = color.ppm(NUM_SAMPLES)).as_bytes())?;
         }
     }
 
