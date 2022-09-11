@@ -20,12 +20,7 @@ float clamp(float v, float min, float max) {
 	}
 }
 
-float randUnif() {
-	auto r = distribution(generator);
-	// r = fmaxf(0.0, r);
-	// r = fminf(1.0, r);
-	return r;
-}
+float randUnif() { return distribution(generator); }
 } // namespace tracer
 
 #endif
