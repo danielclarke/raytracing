@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <chrono>
 #include <iostream>
 #include <random>
@@ -23,7 +24,17 @@
 World makeWorld() {
 	auto world = World{};
 	world.addSphere(Sphere{100.0f, Point3{0.0, -100.5, -1.0},
-						   std::make_shared<Lambertian>(Color{1.0, 1.0, 1.0})});
+						   std::make_shared<Lambertian>(Color{0.8, 0.8, 0.0})});
+	world.addSphere(Sphere{0.5f, Point3{-1.0, 0.0, -1.0},
+						   std::make_shared<Lambertian>(Color{0.1, 0.2, 0.5})});
+	world.addSphere(Sphere{0.5f, Point3{1.0, 0.0, -1.0},
+						   std::make_shared<Metal>(Color{0.8, 0.6, 0.2})});
+	world.addSphere(Sphere{0.5f, Point3{0.0, 0.25, -1.0},
+						   std::make_shared<Dielectric>(1.5)});
+	world.addSphere(Sphere{-0.2f, Point3{0.0, 0.25, -1.0},
+						   std::make_shared<Dielectric>(1.5)});
+	// world.addSphere(Sphere{100.0f, Point3{0.0, -100.5, -1.0},
+	// 					   std::shared_ptr<Lambertian>({})});
 
 	// const auto dimA = 10;
 	// const auto dimB = 10;
@@ -47,7 +58,7 @@ Color rayColor(const World &world, const Ray &ray, int depth) {
 	const auto opHitRecord = world.hit(ray, 0.001, MAXFLOAT);
 	if (opHitRecord.has_value()) {
 		const auto hitRecord = opHitRecord.value();
-		const auto material = hitRecord.material;
+		assert(hitRecord.material != nullptr);
 		const auto scatteredRay = hitRecord.material->scatter(ray, hitRecord);
 		if (scatteredRay.has_value()) {
 			return scatteredRay.value().color *
@@ -72,9 +83,9 @@ int main() {
 
 	constexpr auto focalLength = 1.0;
 	constexpr auto aperture = 0.1;
-	const auto lookFrom = Point3{9.0, 2.0, 3.0};
-	const auto lookAt = Point3{0.0, 0.0, 0.0};
-	constexpr auto distToFocus = 10.0;
+	const auto lookFrom = Point3{0.0, 0.0, 0.0};
+	const auto lookAt = Point3{0.0, 0.0, -1.0};
+	constexpr auto distToFocus = 1.0;
 	constexpr auto numSamples = 100;
 	constexpr auto maxDepth = 500;
 
@@ -92,11 +103,13 @@ int main() {
 		std::cerr << "\rScanlines remaining: " << j << '\n' << std::flush;
 		for (int i = 0; i < imWidth; i++) {
 			auto color = black();
-			const auto u = (i + tracer::randNorm()) / (imWidth - 1);
-			const auto v = (j + tracer::randNorm()) / (imHeight - 1);
-			const auto ray = camera.getRay(u, v);
-			color += rayColor(world, ray, maxDepth);
-			std::cout << color.ppm(1) << '\n';
+			for (int s = 0; s < numSamples; s++) {
+				const auto u = (i + tracer::randUnif()) / (imWidth - 1);
+				const auto v = (j + tracer::randUnif()) / (imHeight - 1);
+				const auto ray = camera.getRay(u, v);
+				color += rayColor(world, ray, maxDepth);
+			}
+			std::cout << color.ppm(numSamples) << '\n';
 		}
 	}
 

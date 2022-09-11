@@ -17,4 +17,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC "-fno-exceptions" "-O3")
 add_compile_options(-fsanitize=address)
 add_link_options(-fsanitize=address)
 
+add_compile_options(-fsanitize=undefined)
+add_link_options(-fsanitize=undefined)
+
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/") # Set the asset path macro to the absolute path on the dev machine

@@ -19,16 +19,16 @@ class Point3 {
 inline Point3 origin() { return {}; }
 
 Point3 randomPointInUnitSphere() {
-	const auto r = tracer::randNorm();
-	const auto theta = tracer::randNorm() * 2.0 * M_PI;
-	const auto phi = tracer::randNorm() * 2.0 * M_PI;
+	const auto r = tracer::randUnif();
+	const auto theta = tracer::randUnif() * 2.0 * M_PI;
+	const auto phi = tracer::randUnif() * 2.0 * M_PI;
 	return {r * sinf(phi) * cosf(theta), r * sinf(phi) * sinf(theta),
 			r * cosf(phi)};
 }
 
 Point3 randomPointInUnitDisc() {
-	const auto r = tracer::randNorm();
-	const auto theta = tracer::randNorm() * 2.0 * M_PI;
+	const auto r = tracer::randUnif();
+	const auto theta = tracer::randUnif() * 2.0 * M_PI;
 	return {r * cosf(theta), r * sinf(theta), 0.0};
 }
 

@@ -29,7 +29,7 @@ Color black() { return {}; };
 Color white() { return {1.0, 1.0, 1.0}; };
 
 Color lerp(const Color &a, const Color &b, float t) {
-	return a * (1.0 - t) * b * t;
+	return a * (1.0 - t) + b * t;
 }
 
 inline Color Color::operator+(const Color &c) const {
