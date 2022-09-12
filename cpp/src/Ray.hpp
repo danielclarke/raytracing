@@ -9,7 +9,7 @@ class Ray {
   public:
 	Point3 origin{};
 	Vec3 direction{};
-	Color color{white()};
+	Color color{tracer::white()};
 
 	Ray() = default;
 	Ray(Point3 origin, Vec3 direction);
@@ -18,7 +18,7 @@ class Ray {
 };
 
 Ray::Ray(Point3 origin, Vec3 direction)
-	: origin(origin), direction(direction), color(white()){};
+	: origin(origin), direction(direction), color(tracer::white()){};
 
 Ray::Ray(Point3 origin, Vec3 direction, Color color)
 	: origin(origin), direction(direction), color(color){};

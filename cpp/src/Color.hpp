@@ -24,13 +24,23 @@ inline int to8Bit(float v, float scale) {
 }
 } // namespace
 
-Color::Color(float red, float green, float blue) : r(red), g(green), b(blue){};
+namespace tracer {
+
 Color black() { return {}; };
+
 Color white() { return {1.0, 1.0, 1.0}; };
+
+Color randColor() {
+	return {tracer::randUnif(), tracer::randUnif(), tracer::randUnif()};
+}
 
 Color lerp(const Color &a, const Color &b, float t) {
 	return a * (1.0 - t) + b * t;
 }
+
+} // namespace tracer
+
+Color::Color(float red, float green, float blue) : r(red), g(green), b(blue){};
 
 inline Color Color::operator+(const Color &c) const {
 	return {this->r + c.r, this->g + c.g, this->b + c.b};

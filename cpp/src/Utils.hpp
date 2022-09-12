@@ -5,9 +5,7 @@
 #include <random>
 
 namespace tracer {
-unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-std::default_random_engine generator(seed);
-// std::normal_distribution<float> distribution(0.5, 0.175);
+std::mt19937 generator(0.0);
 std::uniform_real_distribution<float> distribution(0.0, 1.0);
 
 float clamp(float v, float min, float max) {

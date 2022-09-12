@@ -25,7 +25,7 @@ class Vec3 {
 };
 
 inline Vec3 randomUnitVec3() {
-	return Vec3(tracer::randNorm(), tracer::randNorm(), tracer::randNorm())
+	return Vec3(tracer::randUnif(), tracer::randUnif(), tracer::randUnif())
 		.unit();
 }
 

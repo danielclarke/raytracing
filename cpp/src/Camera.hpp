@@ -32,16 +32,20 @@ Camera::Camera(float aspect, float focalLength, float aperture,
 			   float verticalFovRad, float focusDistance, Point3 origin,
 			   Point3 lookAt, Vec3 up)
 	: aspect(aspect), focalLength(focalLength), origin(origin) {
+
+	this->height = 2.0 * tanf(verticalFovRad / 2.0);
+	this->width = aspect * this->height;
+
 	this->w = origin.distance(lookAt).unit();
 	this->u = up.cross(w).unit();
 	this->v = w.cross(this->u);
-	this->height = 2.0 * tanf(verticalFovRad / 2.0);
-	this->width = aspect * this->height;
+
 	this->horizontal = this->u * focusDistance * this->width;
 	this->vertical = this->v * focusDistance * this->height;
 	this->lowerLeftCorner =
 		this->origin.translate(this->horizontal * -0.5 + this->vertical * -0.5 +
 							   this->w * -focusDistance);
+	this->lensRadius = aperture / 2.0f;
 };
 
 Ray Camera::getRay(float u, float v) const {
@@ -52,7 +56,7 @@ Ray Camera::getRay(float u, float v) const {
 	const auto direction = (this->lowerLeftCorner.translate(
 								this->horizontal * u + this->vertical * v))
 							   .distance(rayOrigin);
-	return {rayOrigin, direction, white()};
+	return {rayOrigin, direction, tracer::white()};
 }
 
 #endif
