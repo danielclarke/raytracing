@@ -29,7 +29,8 @@ inline Vec3 randomUnitVec3() {
 	const auto theta = tracer::randUnif() * 2.0 * M_PI;
 	const auto phi = tracer::randUnif() * 2.0 * M_PI;
 	return Vec3(r * sinf(phi) * cosf(theta), r * sinf(phi) * sinf(theta),
-			r * cosf(phi)).unit();
+				r * cosf(phi))
+		.unit();
 }
 
 inline Vec3 Vec3::operator+(const Vec3 &v) const {
