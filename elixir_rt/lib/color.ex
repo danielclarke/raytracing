@@ -5,6 +5,9 @@ defmodule Color do
   Parses the given `line` into a command.
 
   ## Examples
+      iex> Color.lerp %Color{r: 0.0, g: 0.0, b: 0.0}, %Color{r: 1.0, g: 1.0, b: 1.0}, 0.5
+      %Color{r: 0.5, g: 0.5, b: 0.5}
+
       iex> Color.ppm %Color{r: 1.0, g: 1.0, b: 1.0}, 1
       "255 255 255"
 
@@ -49,9 +52,6 @@ defmodule Color do
   end
 
   def ppm(%Color{r: r, g: g, b: b}, samples) do
-    r = r |> bit8(samples)
-    g = g |> bit8(samples)
-    b = b |> bit8(samples)
-    "#{r} #{g} #{b}"
+    "#{r |> bit8(samples)} #{g |> bit8(samples)} #{b |> bit8(samples)}"
   end
 end
