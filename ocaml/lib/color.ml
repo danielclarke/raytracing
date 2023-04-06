@@ -13,11 +13,20 @@ let combine c c' = { r = c.r *. c'.r; g = c.g *. c'.g; b = c.b *. c'.b }
 let scale c f = { r = c.r *. f; g = c.g *. f; b = c.b *. f }
 let lerp ~u ~v ~fraction = add (scale u (1.0 -. fraction)) (scale v fraction)
 
+let clamp value ~lower ~upper =
+  if value < lower then
+    lower
+  else if upper < value then
+    upper
+  else
+    value
+
+
 let bit8 v ~samples =
   let lower = 0.
   and upper = 0.999
   and scale = 1. /. Int.to_float samples in
-  255.999 *. (scale *. v |> sqrt |> Utils.clamp ~lower ~upper) |> Float.to_int
+  255.999 *. (scale *. v |> sqrt |> clamp ~lower ~upper) |> Float.to_int
 
 
 let ppm t ~samples =
