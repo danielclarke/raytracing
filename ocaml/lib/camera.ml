@@ -1,28 +1,14 @@
 type t =
-  { aspect : float
-  ; height : float
-  ; width : float
-  ; focal_length : float
-  ; lens_radius : float
+  { lens_radius : float
   ; origin : Point.t
   ; horizontal : Vec3.t
   ; vertical : Vec3.t
   ; lower_left_corner : Point.t
   ; u : Vec3.t
   ; v : Vec3.t
-  ; w : Vec3.t
   }
 
-let make
-    ~aspect
-    ~focal_length
-    ~aperture
-    ~vertical_fov_rad
-    ~origin
-    ~focus_distance
-    ~look_at
-    ~v_up
-  =
+let make ~aspect ~aperture ~vertical_fov_rad ~origin ~focus_distance ~look_at ~v_up =
   let open Vec3 in
   let w = unit (Point.distance origin look_at) in
   let u = unit (cross v_up w) in
@@ -35,19 +21,7 @@ let make
     scale (-0.5) horizontal >>+ scale (-0.5) vertical >>+ scale (-.focus_distance) w
   in
   let lower_left_corner = Point.translate origin camera_center_offset in
-  { aspect
-  ; height
-  ; width
-  ; focal_length
-  ; lens_radius = aperture /. 2.
-  ; origin
-  ; horizontal
-  ; vertical
-  ; lower_left_corner
-  ; u
-  ; v
-  ; w
-  }
+  { lens_radius = aperture /. 2.; origin; horizontal; vertical; lower_left_corner; u; v }
 
 
 let get_ray t ~u ~v =

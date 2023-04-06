@@ -1,4 +1,4 @@
-let clamp ~value ~lower ~upper =
+let clamp value ~lower ~upper =
   if value < lower then
     lower
   else if upper < value then

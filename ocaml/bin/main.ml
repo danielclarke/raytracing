@@ -21,7 +21,6 @@ let rec ray_color ray world depth =
 let scene_camera aspect =
   Camera.make
     ~aspect
-    ~focal_length:1.0
     ~aperture:0.1
     ~vertical_fov_rad:(Float.pi /. 8.)
     ~origin:({ x = 9.; y = 2.; z = 3. } : Point.t)
