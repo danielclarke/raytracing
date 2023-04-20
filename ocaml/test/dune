@@ -1,1 +1,3 @@
-(executable (name raytracer) (libraries raytracer ounit2))
+(executable
+ (name test_raytracer)
+ (libraries raytracer ounit2))

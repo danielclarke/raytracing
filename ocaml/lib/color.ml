@@ -29,10 +29,10 @@ let bit8 v ~samples =
   255.999 *. (scale *. v |> sqrt |> clamp ~lower ~upper) |> Float.to_int
 
 
-let ppm t ~samples =
-  let r = t.r |> bit8 ~samples in
-  let g = t.g |> bit8 ~samples in
-  let b = t.b |> bit8 ~samples in
+let ppm { r; g; b } ~samples =
+  let r = r |> bit8 ~samples in
+  let g = g |> bit8 ~samples in
+  let b = b |> bit8 ~samples in
   Printf.sprintf "%i %i %i" r g b
 
 

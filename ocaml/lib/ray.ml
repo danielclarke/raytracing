@@ -5,5 +5,5 @@ type t =
   }
 
 let at t f =
-  let v = Vec3.scale f t.direction in
+  let v = Vec3.(f * t.direction) in
   Point.translate t.origin v

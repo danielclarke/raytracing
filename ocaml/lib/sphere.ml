@@ -37,7 +37,7 @@ let hit sphere ray ~t_min ~t_max =
   | Some root ->
     let open Vec3 in
     let point = Ray.at ray root in
-    let normal = scale (1. /. sphere.radius) (Point.distance point sphere.center) in
+    let normal = 1. /. sphere.radius * Point.distance point sphere.center in
     Some
       (Hit_record.qualified_hit_record
          ray

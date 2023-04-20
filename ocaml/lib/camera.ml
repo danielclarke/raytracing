@@ -15,10 +15,10 @@ let make ~aspect ~aperture ~vertical_fov_rad ~origin ~focus_distance ~look_at ~v
   let v = cross w u in
   let height = 2. *. tan (vertical_fov_rad /. 2.) in
   let width = aspect *. height in
-  let horizontal = scale (focus_distance *. width) u
-  and vertical = scale (focus_distance *. height) v in
+  let horizontal = focus_distance *. width * u
+  and vertical = focus_distance *. height * v in
   let camera_center_offset =
-    scale (-0.5) horizontal >>+ scale (-0.5) vertical >>+ scale (-.focus_distance) w
+    (-0.5 * horizontal) + (-0.5 * vertical) + (-.focus_distance * w)
   in
   let lower_left_corner = Point.translate origin camera_center_offset in
   { lens_radius = aperture /. 2.; origin; horizontal; vertical; lower_left_corner; u; v }
@@ -27,10 +27,10 @@ let make ~aspect ~aperture ~vertical_fov_rad ~origin ~focus_distance ~look_at ~v
 let get_ray t ~u ~v =
   let open Vec3 in
   let rd = Point.random_point_in_unit_disc () in
-  let offset = scale (rd.x *. t.lens_radius) t.u >>+ scale (rd.y *. t.lens_radius) t.v in
+  let offset = (rd.x *. t.lens_radius * t.u) + (rd.y *. t.lens_radius * t.v) in
   let direction =
     Point.distance
-      (Point.translate t.lower_left_corner (scale u t.horizontal >>+ scale v t.vertical))
+      (Point.translate t.lower_left_corner ((u * t.horizontal) + (v * t.vertical)))
       (Point.translate t.origin offset)
   in
   ({ origin = Point.translate t.origin offset; direction; color = Color.white } : Ray.t)
